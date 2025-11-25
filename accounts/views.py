@@ -5,14 +5,14 @@ from django.contrib.auth.decorators import login_required
 
 def logout_view(request):
     auth_logout(request)
-    return redirect('home')
+    return redirect('home:home')
 
 def login_view(request):
     if request.method == 'POST':
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
         if user is not None:
             auth_login(request, user)
-            return redirect('home')
+            return redirect('home:home')
         else:
             return render(request, 'accounts/login.html', {'error': 'Invalid credentials'})
     return render(request, 'accounts/login.html')
