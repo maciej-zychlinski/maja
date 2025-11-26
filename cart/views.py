@@ -3,6 +3,8 @@ from django.views.decorators.http import require_POST
 from store.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm
+from .models import Order, OrderItem
+from django.contrib.auth.decorators import login_required
 
 @require_POST
 def cart_add(request, product_id):
@@ -29,3 +31,21 @@ def cart_detail(request):
             initial={'quantity': item['quantity'],
                      'update': True})
     return render(request, 'cart/detail.html', {'cart': cart})
+
+@login_required
+def purchase(request):
+    cart = Cart(request)
+    if not cart:
+        return redirect('cart:cart_detail')
+
+    # Calculate total from cart items
+    total = sum(item['price'] * item['quantity'] for item in cart)
+    
+    order = Order.objects.create(user=request.user, total=total)
+    for item in cart:
+        OrderItem.objects.create(order=order,
+                                 product=item['product'],
+                                 price=item['price'],
+                                 quantity=item['quantity'])
+    cart.clear()
+    return render(request, 'cart/purchase.html', {'order': order})

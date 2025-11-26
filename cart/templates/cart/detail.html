@@ -51,6 +51,8 @@
   </table>
   <p class="text-right">
     <a href="{% url "store:product_list" %}" class="btn btn-secondary">Continue shopping</a>
-    <a href="#" class="btn btn-primary">Checkout</a>
+    {% if cart|length > 0 %}
+      <a href="{% url "cart:purchase" %}" class="btn btn-primary">Purchase</a>
+    {% endif %}
   </p>
 {% endblock %}

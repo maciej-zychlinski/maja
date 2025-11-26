@@ -38,3 +38,8 @@
   width: fit-content;
   max-height: 400px;
 }
+
+.product-img {
+    height: 300px;
+    object-fit: cover;
+}
